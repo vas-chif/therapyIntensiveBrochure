@@ -68,7 +68,7 @@ onMounted(async () => {
 <template>
   <q-page class="brochure-page">
     <!-- Header con Toolbar Quasar -->
-    <q-header elevated class="bg-primary text-white q-pa-sm">
+    <q-header class="bg-primary header text-white q-pa-sm">
       <q-toolbar>
         <q-avatar square style="width: 70px; height: 50px">
           <img :src="logoBase64" alt="Logo SST" />
@@ -76,7 +76,7 @@ onMounted(async () => {
 
         <q-toolbar-title class="text-center">
           <div class="header-title-text">
-            <div class="text-h6 text-weight-bold">{{ $t('title') }}</div>
+            <div class="text-h6 text-weight-bold" style="font-size: 16px">{{ $t('title') }}</div>
           </div>
         </q-toolbar-title>
 
@@ -308,20 +308,27 @@ onMounted(async () => {
     </q-card>
 
     <!-- Footer -->
-    <div class="footer">
-      <p>{{ $t('footer.text') }}</p>
-      <a
-        class="created-by text-no-wrap"
-        href="https://uniqueyouagency.com/#/"
-        target="_blank"
-        rel="noopener noreferrer"
-        tabindex="0"
-        aria-label="Edit by: UniqueYouAgency"
-      >
-        Created by
-        <span>Unique<span class="unique">You</span>Agency</span>
-      </a>
-    </div>
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-title">
+          {{ $t('footer.text') }}
+        </div>
+        <div style="font-size: 10px">
+          Created by
+          <a
+            class="created-by caption text-secondary"
+            href="https://uniqueyouagency.com/#/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="text-decoration: none"
+          >
+            <span class="text-weight-bolder text-purple-10">
+              Unique<span class="text-red-8">You</span>Agency</span
+            >
+          </a>
+        </div>
+      </div>
+    </footer>
   </q-page>
 </template>
 
@@ -331,10 +338,11 @@ onMounted(async () => {
   background: linear-gradient(135deg, #e8f4f8 0%, #f9f9f9 100%);
 }
 
-.header-title-text {
-  text-align: center;
-  line-height: 1.3;
-}
+// .header-title-text {
+//   text-align: center;
+//   line-height: 1.3;
+//   font-size: 20px;
+// }
 
 .hospital-image-section {
   width: 100%;
@@ -470,14 +478,27 @@ onMounted(async () => {
   background: #2c5f7f;
   color: white;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   margin-top: 30px;
-  border-radius: 12px 12px 0 0;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+}
 
-  p {
-    margin: 0;
-    font-size: 0.9rem;
-  }
+.header {
+  padding: 10px;
+  border-radius: 0 0 8px 8px;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-title {
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 @media (max-width: 600px) {
