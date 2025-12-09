@@ -1,0 +1,78 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to Firebase
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: 🔍 Run ESLint
+        run: yarn lint
+        continue-on-error: false
+      
+      - name: 🏗️ Build production
+        run: yarn build
+        env:
+          NODE_ENV: production
+      
+      - name: 📊 List build output
+        run: |
+          echo "Build artifacts:"
+          ls -lah dist/spa/
+      
+      - name: 🚀 Deploy to Firebase Hosting (Production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
+      
+      - name: 🔍 Deploy preview (Pull Request)
+        if: github.event_name == 'pull_request'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
+      
+      - name: ✅ Deployment complete
+        if: success()
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Production URL: https://brochure-icu.web.app"
+      
+      - name: ❌ Deployment failed
+        if: failure()
+        run: |
+          echo "❌ Deployment failed. Check logs above for details."
+          exit 1

@@ -1,7 +1,7 @@
-// This is just an example,
-// so you can safely delete all default props below
+import brochure from './brochure';
 
 export default {
   failed: 'Action failed',
   success: 'Action was successful',
+  ...brochure
 };
