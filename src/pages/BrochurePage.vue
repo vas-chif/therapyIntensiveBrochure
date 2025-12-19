@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import QRCode from 'qrcode';
 import logoSst from '../assets/logo-sst.png';
 import ospedaleImg from '../assets/ospedale.png';
+import qrCodeStatic from '../assets/qr-code.png';
 
 const { t, locale } = useI18n();
-const qrCanvas = ref<HTMLCanvasElement | null>(null);
+const qrCodeUrl = ref(qrCodeStatic);
+const showQrDialog = ref(false);
 
 const currentLang = computed(() => {
   const lang = locale.value.startsWith('it') ? 'it' : 'en';
@@ -46,31 +47,14 @@ const openUrp = () => {
   window.open('https://www.uslnordovest.toscana.it/', '_blank');
 };
 
-// Genera QR Code
-onMounted(async () => {
-  if (qrCanvas.value) {
-    const currentUrl = window.location.href;
-    try {
-      await QRCode.toCanvas(qrCanvas.value, currentUrl, {
-        width: 200,
-        margin: 2,
-        color: {
-          dark: '#2c5f7f',
-          light: '#ffffff',
-        },
-      });
-    } catch (error) {
-      console.error('Error generating QR code:', error);
-    }
-  }
-});
+// Genera QR Code rimosso in favore di immagine statica
 </script>
 <template>
   <q-page class="brochure-page">
     <!-- Header con Toolbar Quasar -->
     <q-header class="bg-primary header text-white q-pa-sm">
       <q-toolbar>
-        <q-avatar square style="width: 70px; height: 50px">
+        <q-avatar square style="width: 50px; height: 30px">
           <img :src="logoBase64" alt="Logo SST" />
         </q-avatar>
 
@@ -79,6 +63,8 @@ onMounted(async () => {
             <div class="text-h6 text-weight-bold" style="font-size: 16px">{{ $t('title') }}</div>
           </div>
         </q-toolbar-title>
+
+        <q-btn flat round dense icon="qr_code" class="q-mr-sm" @click="showQrDialog = true" />
 
         <q-btn-dropdown flat dense :label="currentLang" dropdown-icon="language">
           <q-list>
@@ -301,11 +287,29 @@ onMounted(async () => {
       <q-card-section class="text-center">
         <h4>{{ $t('qr.title') }}</h4>
         <div class="qr-container">
-          <canvas ref="qrCanvas"></canvas>
+          <img :src="qrCodeUrl" alt="QR Code" style="width: 200px" />
         </div>
         <p class="qr-caption">{{ $t('qr.caption') }}</p>
       </q-card-section>
     </q-card>
+
+    <!-- Dialog QR Code -->
+    <q-dialog v-model="showQrDialog">
+      <q-card class="q-pa-md text-center" style="min-width: 300px">
+        <q-card-section>
+          <div class="text-h6">{{ $t('qr.title') }}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <img :src="qrCodeUrl" alt="QR Code" style="width: 100%; max-width: 300px" />
+          <div class="text-caption q-mt-sm">{{ $t('qr.caption') }}</div>
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn flat label="Chiudi" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
     <!-- Footer -->
     <footer class="footer">

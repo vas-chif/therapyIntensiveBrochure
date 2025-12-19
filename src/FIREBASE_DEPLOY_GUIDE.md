@@ -46,7 +46,7 @@ firebase login --no-localhost
 ## 🏗️ STEP 3: Inizializza Firebase nel Progetto
 
 ```bash
-cd /home/nyk-ai/projects/medicalUtility
+cd /home/nyk-ai/projects/brochureCar
 
 # Inizializza Firebase
 firebase init hosting
@@ -58,7 +58,7 @@ firebase init hosting
 
 1. **Select a Firebase project:**
    - `Create a new project` → **Invio**
-   - Nome progetto: `medical-utility-pro` (o nome personalizzato)
+   - Nome progetto: `terapiaintensiva-oa` (o nome personalizzato)
 
 2. **What do you want to use as your public directory?**
 
